@@ -1,4 +1,27 @@
+import 'location.dart';
+import 'networking.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+const openWeatherMapURL = 'https://api.openweathermap.org/data/2.5/weather';
+String apiKey = dotenv.env['API_KEY'];
+
 class WeatherModel {
+  Future<dynamic> getCityWeatehr(String cityName) async {
+    String url = '$openWeatherMapURL?q=$cityName&appid=$apiKey&units=metric';
+    NetworkHelper networkHelper = NetworkHelper(url);
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
+  Future<dynamic> getLocationWeather() async {
+    Location location = Location();
+
+    NetworkHelper networkHelper = NetworkHelper(
+        '$openWeatherMapURL?lat=${location.latitude}&lon=${location.longitude}&appid=$apiKey&units=metric');
+    var weatherData = await networkHelper.getData();
+    return weatherData;
+  }
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';
